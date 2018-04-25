@@ -14,5 +14,11 @@ describe Journey do
       subject.start_journey(entry_station, card.balance)
       expect(subject.instance_variable_get(:@entry_station)).to eq(entry_station)
     end
+
+    it 'stores a balance' do
+      subject.start_journey(entry_station, card.balance)
+      expect(subject.instance_variable_get(:@balance)).to eq(2)
+    end
+
   end
 end

@@ -4,7 +4,7 @@ class Journey
 
   def start_journey(entry_station, balance)
     @entry_station = entry_station
-
+    @balance = balance
   end
 
 end
