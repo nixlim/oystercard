@@ -7,7 +7,7 @@ describe Oystercard do
 
   describe '#balance' do
     it 'should return the balance' do
-      expect(oystercard.balance).to eq 0
+      expect(oystercard.balance).to eq DEFAULT_BALANCE
     end
   end
 

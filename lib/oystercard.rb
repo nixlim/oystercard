@@ -1,3 +1,4 @@
+DEFAULT_BALANCE = 0
 MAX_LIMIT = 90
 MINIMUM_BALANCE = 1
 MINIMUM_CHARGE = 1
@@ -6,7 +7,7 @@ class Oystercard
   attr_reader :balance, :list_of_journeys
 
   def initialize
-    @balance = 0
+    @balance = DEFAULT_BALANCE
     @list_of_journeys = []
   end
 
