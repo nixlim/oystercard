@@ -31,6 +31,7 @@ end
 
 describe '#touch_in' do
   it 'should check whether the last journey is complete' do
+    allow(journey).to receive(:fare).with(anything)
     subject.instance_variable_set(:@balance, 20)
     subject.touch_in(entry_station)
     expect(journey).to have_received :fare

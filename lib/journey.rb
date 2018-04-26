@@ -10,4 +10,9 @@ class Journey
     @exit_station = exit_station
   end
 
+
+  def complete?
+
+  end
+
 end
