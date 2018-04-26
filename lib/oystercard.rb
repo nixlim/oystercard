@@ -19,19 +19,14 @@ class Oystercard
   end
 
   def touch_in(station)
-    if @list_of_journeys.empty?
-      current_journey = @journey_class.new(station)
-      current_journey.fare()
-      raise 'Insufficient funds for a journey' if balance < MINIMUM_BALANCE
-      @journey = { entry_station: station, complete: current_journey.complete? }
-    elsif @list_of_journeys.last[:complete] == :incomplete
+    if in_journey?
       touch_out(station)
       raise 'Did not touch out on last journey, please touch in again.'
     else
-      current_journey = @journey_class.new(station)
-      current_journey.fare()
+      @current_journey = @journey_class.new(station)
+      @current_journey.fare()
       raise 'Insufficient funds for a journey' if balance < MINIMUM_BALANCE
-      @journey = { entry_station: station, complete: current_journey.complete? }
+      @journey = { entry_station: station, complete: @current_journey.complete? }
     end
   end
 
@@ -42,7 +37,7 @@ class Oystercard
   end
 
   def in_journey?
-      !@journey.nil?
+      !@current_journey.complete?
   end
 
 private

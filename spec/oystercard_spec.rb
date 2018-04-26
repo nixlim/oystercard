@@ -38,6 +38,7 @@ describe '#touch_in' do
     expect(journey).to have_received(:fare)
   end
   it 'should raise an error message if balance on #touch_in is less than £1' do
+    subject.instance_variable_set(:@journey_class, journey_class)
     expect { subject.touch_in(entry_station) }.to raise_error 'Insufficient funds for a journey'
   end
 
@@ -45,11 +46,14 @@ describe '#touch_in' do
     before(:each) do
       subject.instance_variable_set(:@balance, 20)
     end
-    it 'should change in_journey? on touch_in' do
-      subject.touch_in(entry_station, journey)
+    it 'should send #complete? to journey on touch_in' do
+      subject.instance_variable_set(:@journey_class, journey_class)
+      allow(journey).to receive(:complete?).and_return(false)
+      subject.touch_in(entry_station)
       expect(subject).to be_in_journey
     end
     it 'should remember the entry station' do
+      subject.instance_variable_set(:@journey_class, journey_class)
       subject.touch_in(entry_station)
       variable = subject.instance_variable_get(:@journey)[:entry_station]
       expect(variable).to eq entry_station
@@ -62,12 +66,14 @@ describe '#touch_out' do
 
   it 'should deduct minimum fare upon #touch_out' do
     subject.instance_variable_set(:@balance, 20)
+    subject.instance_variable_set(:@journey_class, journey_class)
     subject.touch_in(entry_station)
     expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-1)
   end
   context 'touch out affects in_journey? method' do
     before(:each) do
       subject.instance_variable_set(:@balance, 20)
+      subject.instance_variable_set(:@journey_class, journey_class)
       subject.touch_in(entry_station)
     end
     it 'should store exit_station on touch_out' do
@@ -84,6 +90,7 @@ end
   context 'touching in and out' do
     before(:each) do
       subject.instance_variable_set(:@balance, 20)
+      subject.instance_variable_set(:@journey_class, journey_class)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
     end
