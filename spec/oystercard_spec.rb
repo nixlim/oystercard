@@ -4,7 +4,8 @@ describe Oystercard do
   let(:oystercard) { Oystercard.new }
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station}
-  let(:journey) { spy :journey_double }
+  let(:journey_class) { double :journey_double, new: journey }
+  let(:journey) { spy :journey}
 
   describe '#balance' do
     it 'should return the balance' do
@@ -31,10 +32,10 @@ end
 
 describe '#touch_in' do
   it 'should check whether the last journey is complete' do
-    allow(journey).to receive(:fare).with(anything)
     subject.instance_variable_set(:@balance, 20)
+    subject.instance_variable_set(:@journey_class, journey_class)
     subject.touch_in(entry_station)
-    expect(journey).to have_received :fare
+    expect(journey).to have_received(:fare)
   end
   it 'should raise an error message if balance on #touch_in is less than £1' do
     expect { subject.touch_in(entry_station) }.to raise_error 'Insufficient funds for a journey'
@@ -45,7 +46,7 @@ describe '#touch_in' do
       subject.instance_variable_set(:@balance, 20)
     end
     it 'should change in_journey? on touch_in' do
-      subject.touch_in(entry_station)
+      subject.touch_in(entry_station, journey)
       expect(subject).to be_in_journey
     end
     it 'should remember the entry station' do
