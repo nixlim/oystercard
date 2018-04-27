@@ -10,7 +10,6 @@ class Journey
 
   def end_journey(exit_station)
     @exit_station = exit_station
-    p 'FIRED'
   end
 
   def complete?

@@ -40,6 +40,11 @@ end
         oystercard.touch_in(entry_station)
       }.to raise_error 'Insufficient funds for a journey'
     end
+    it 'should send .start_jouney to journey' do
+      oystercard.top_up(5)
+      oystercard.touch_in(entry_station)
+      expect(journey).to have_received(:start_journey)
+    end
     it 'should record the entry station in @list_of_stations' do
       oystercard.top_up(5)
       oystercard.touch_in(entry_station)
@@ -53,12 +58,20 @@ end
       expect(oystercard).to respond_to(:touch_out)
     end
     it 'should send .end_journey to journey' do
+      oystercard.top_up(5)
+      oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
       expect(journey).to have_received(:end_journey)
     end
-    it 'should reduce the balance by MINIMUM_FARE' do
-      expect { oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by(-1)
+    it 'should record the exit station in the @list_of_stations' do
+      oystercard.top_up(5)
+      oystercard.touch_in(entry_station)
+      oystercard.touch_out(exit_station)
+      expect(oystercard.list_of_journeys.last[:exit_station]).to eq exit_station
     end
-    it 'should deduct minimum fare upon #touch_out'
+    # it 'should reduce the balance by MINIMUM_FARE' do
+    #   expect { oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by(-1)
+    # end
+    # it 'should deduct minimum fare upon #touch_out'
   end
 end

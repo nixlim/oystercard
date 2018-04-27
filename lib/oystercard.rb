@@ -27,6 +27,7 @@ class Oystercard
   def touch_out(station)
     @journey.end_journey(station)
     @balance -= 1
+    @list_of_journeys.last.merge!({exit_station: station})
   end
 
 
