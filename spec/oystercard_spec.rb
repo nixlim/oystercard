@@ -1,9 +1,11 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:journey_class) { double :journey_double, new: journey }
-  let(:journey) { spy :journey, start_journey: nil}
-  let(:oystercard) { Oystercard.new }
+  #
+  # let(:journey_class) { double :journey_double, new: journey }
+  let(:journey) { spy :journey }
+  let(:oystercard) { Oystercard.new(journey) }
+
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station}
 
@@ -16,7 +18,7 @@ describe Oystercard do
 
   describe '#initialise' do
     it 'should have #list_of_journeys as an empty hash' do
-      expect(subject.list_of_journeys).to be_empty
+      expect(oystercard.list_of_journeys).to be_empty
     end
   end
 
@@ -35,17 +37,28 @@ end
 
     it 'should raise an error message if balance on #touch_in is less than £1' do
       expect {
-        subject.touch_in(entry_station)
+        oystercard.touch_in(entry_station)
       }.to raise_error 'Insufficient funds for a journey'
     end
-    context 'changes caused by touch_in' do
-      before(:each) do
-        subject.instance_variable_set(:@balance, 20)
-      end
+    it 'should record the entry station in @list_of_stations' do
+      oystercard.top_up(5)
+      oystercard.touch_in(entry_station)
+      expect(oystercard.list_of_journeys.last[:entry_station]).to eq entry_station
     end
+
   end
 
   describe '#touch_out' do
+    it 'should have a #touch_out method' do
+      expect(oystercard).to respond_to(:touch_out)
+    end
+    it 'should send .end_journey to journey' do
+      oystercard.touch_out(exit_station)
+      expect(journey).to have_received(:end_journey)
+    end
+    it 'should reduce the balance by MINIMUM_FARE' do
+      expect { oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by(-1)
+    end
     it 'should deduct minimum fare upon #touch_out'
   end
 end

@@ -2,7 +2,7 @@ class Journey
   MINIMUM_FARE = 1
   PENALTY_FARE = 6
 
-  attr_reader :entry_station, :exit_station
+  attr_accessor :entry_station, :exit_station
 
   def start_journey(entry_station)
     @entry_station = entry_station
@@ -10,6 +10,7 @@ class Journey
 
   def end_journey(exit_station)
     @exit_station = exit_station
+    p 'FIRED'
   end
 
   def complete?
